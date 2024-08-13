@@ -1,16 +1,17 @@
-
 #![allow(unused_imports)]
 #![allow(dead_code)]
 extern crate rand;
+extern crate rand_distr;
 use rand::Rng;
+use rand_distr::{Normal, Distribution};
 use rand::thread_rng;
 use std::cmp::Ordering;
 
 // Define the Node struct
 #[allow(unused)]
 struct Node {
-    value: i32,
-    fruit: String,
+    id: i32,
+    value: f32,
     next: Option<Box<Node>>,
 }
 
@@ -30,16 +31,16 @@ impl LinkedList {
     fn print(&self) {
         let mut current: &Option<Box<Node>> = &self.head;
         while let Some(ref node) = current {
-            println!("Value: {}, Fruit: {}", node.value, node.fruit);
+            println!("ID: {}, Value: {}", node.id, node.value);
             current = &node.next;
         }
     }
 
-    fn push(&mut self, value: i32, fruit: String) {
+    fn push(&mut self, id: i32, value: f32) {
         let old_head: Option<Box<Node>> = self.head.take();
         let new_head: Box<Node> = Box::new(Node {
+            id,
             value,
-            fruit,
             next: old_head,
         });
         self.head = Some(new_head);
@@ -50,8 +51,8 @@ impl LinkedList {
             Some(n) => {
                 self.head = n.next;
                 Some(Node {
+                    id: n.id,
                     value: n.value,
-                    fruit: n.fruit,
                     next: None,
                 })
             },
@@ -63,26 +64,20 @@ impl LinkedList {
 
 #[allow(unused)]
 fn main() {
-    let fruits = vec![
-        "Apple".to_string(),
-        "Banana".to_string(),
-        "Cherry".to_string(),
-        "Date".to_string(),
-        "Elderberry".to_string(),
-        "Fig".to_string(),
-        "Grape".to_string(),
-    ];
+ 
 
     let mut rng = rand::thread_rng();
     let mut list: LinkedList = LinkedList::new();
 
-    for fruit in fruits {
-            let value: i32 = rng.gen_range(1..101);
-            list.push(value, fruit);
+    // mean 2, standard deviation 3
+    let normal = Normal::new(4.0, 2.0).unwrap();
+
+    for id in 1..101 {
+            let value: f32 = normal.sample(&mut rand::thread_rng());
+            list.push(id, value);
         }
     list.print();
-    println!("__");
-    list.pop();
-    list.print();
-
+    // println!("__");
+    // list.pop();
+    // list.print();
 }
