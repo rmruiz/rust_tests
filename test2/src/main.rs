@@ -1,10 +1,12 @@
 #![allow(unused_imports)]
 #![allow(dead_code)]
 extern crate rand;
-extern crate rand_distr;
 use rand::Rng;
-use rand_distr::{Normal, Distribution};
 use rand::thread_rng;
+
+extern crate rand_distr;
+use rand_distr::{Normal, Distribution};
+
 use std::cmp::Ordering;
 
 // Define the Node struct
